@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Project Skill Maker"
+  short_description: "Generate AI project maintainer instructions"
+  default_prompt: "Use $ai-project-skill-maker to create a project maintainer skill or instruction bundle for this repo."
