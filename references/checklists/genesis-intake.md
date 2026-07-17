@@ -5,6 +5,7 @@ Ask enough questions to build a useful day-one maintainer skill. Group questions
 ## Essential Questions
 
 - What language do you think and review best in?
+- Should I use that language for the rest of this interview and bias generated project references toward it? If not, which interview and output languages should I use? Default to English when you have no preference.
 - What country or region context should shape the project's public expression?
 - Who is the target audience by language and locale?
 - What is the product/project trying to become?

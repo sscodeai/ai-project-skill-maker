@@ -9,12 +9,14 @@ Turn developer intent into a project maintainer skill that can guide day-one imp
 ## Procedure
 
 1. Interview the developer using `references/checklists/genesis-intake.md`.
-2. Ask in the developer's preferred language and capture their language/locale profile, but record core skill instructions in English.
-3. Capture constraints as declared intent, not observed facts.
-4. Convert uncertain choices into inferred assumptions only when the user wants momentum.
-5. Select recommended standards from the relevant files under `references/standards/`.
-6. Render the skill with explicit "day-one" workflows: create scaffold, establish checks, write docs, and define release posture.
-7. Include a clear "First Repository Tasks" section in `references/workflows.md`.
+2. Start with language setup: ask the developer's comfortable language and whether to use it for the rest of the interview and generated project-facing references.
+3. If the developer opts in, continue in that language and bias generated project references toward that language and locale profile. If not, ask them to choose languages explicitly and default unresolved choices to English.
+4. Record core skill instructions in English.
+5. Capture constraints as declared intent, not observed facts.
+6. Convert uncertain choices into inferred assumptions only when the user wants momentum.
+7. Select recommended standards from the relevant files under `references/standards/`.
+8. Render the skill with explicit "day-one" workflows: create scaffold, establish checks, write docs, and define release posture.
+9. Include a clear "First Repository Tasks" section in `references/workflows.md`.
 
 ## Genesis-Specific Rules
 
