@@ -9,7 +9,7 @@ Turn developer intent into a project maintainer skill that can guide day-one imp
 ## Procedure
 
 1. Interview the developer using `references/checklists/genesis-intake.md`.
-2. Ask in the developer's preferred language, but record core skill instructions in English.
+2. Ask in the developer's preferred language and capture their language/locale profile, but record core skill instructions in English.
 3. Capture constraints as declared intent, not observed facts.
 4. Convert uncertain choices into inferred assumptions only when the user wants momentum.
 5. Select recommended standards from the relevant files under `references/standards/`.
@@ -29,6 +29,7 @@ Collect:
 
 - Product goal and non-goals.
 - Target users and public positioning.
+- Author comfort language, country/region context, target audience locale, and formality profile.
 - Project language for docs, UI, comments, and release notes.
 - Preferred stack and hard exclusions.
 - Expected repo shape.

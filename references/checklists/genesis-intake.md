@@ -4,6 +4,9 @@ Ask enough questions to build a useful day-one maintainer skill. Group questions
 
 ## Essential Questions
 
+- What language do you think and review best in?
+- What country or region context should shape the project's public expression?
+- Who is the target audience by language and locale?
 - What is the product/project trying to become?
 - Who is it for, and what should it not try to do?
 - What stack do you prefer? Any hard exclusions?
@@ -15,6 +18,8 @@ Ask enough questions to build a useful day-one maintainer skill. Group questions
 
 ## Useful Follow-Ups
 
+- For Japanese projects, should docs use `です・ます`, `だ・である`, or a mixed technical documentation style?
+- Should examples, dates, spelling, terminology, or public copy follow a specific country or region?
 - What projects, repos, or docs should this feel similar to?
 - What maintenance style do you want: stable, experimental, documentation-first, contributor-friendly, performance-focused, or something else?
 - What files should future AI coding agents avoid editing without explicit confirmation?
