@@ -16,6 +16,7 @@ Use genesis mode for a new project that does not have meaningful repository evid
 
 The maker interviews the developer about:
 
+- comfortable language and locale preferences
 - product goals and non-goals
 - target users
 - technical preferences and constraints
@@ -25,6 +26,14 @@ The maker interviews the developer about:
 - first implementation milestones
 
 The output is a day-one maintainer skill that records declared intent and recommended standards without pretending they are observed repository facts.
+
+#### Language and Locale Setup
+
+Genesis mode starts by asking what language the author thinks and reviews best in. It then asks whether the rest of the interview and generated project-facing references should use that language.
+
+If the author opts in, the maker continues in that language and biases generated references toward the author's language and locale profile. For example, Japanese projects can choose `です・ます`, `だ・である`, or a mixed technical documentation style, and can target domestic Japan, global Japanese readers, or bilingual engineers.
+
+If the author does not want to use their comfortable language for the project, the maker asks them to choose interview and output languages explicitly. When there is no preference, the default is English.
 
 ### Repo Mode
 
