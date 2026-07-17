@@ -1,5 +1,7 @@
 # AI Project Skill Maker
 
+[日本語版](README.ja.md)
+
 Generate durable project maintainer skills and instruction bundles for AI coding agents.
 
 AI Project Skill Maker is a meta-skill: it helps create project-specific maintainer guidance that future AI sessions can use to understand a repository, make changes in the right style, run the right checks, preserve project intent, and avoid editing generated or sensitive files casually.
