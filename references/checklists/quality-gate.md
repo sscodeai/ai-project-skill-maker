@@ -2,6 +2,7 @@
 
 Before delivering a generated project maintainer skill:
 
+- Validate the rendered output directory, not the raw `assets/templates/project-skill` template.
 - Required files exist.
 - `SKILL.md` frontmatter has only `name` and `description`.
 - `agents/openai.yaml` has quoted interface strings.
@@ -17,5 +18,10 @@ Run:
 
 ```bash
 node scripts/validate-project-skill.mjs <output-skill-dir>
+```
+
+For Codex skill compatibility, optionally run the skill-creator validator after installing `PyYAML` in the Python environment:
+
+```bash
 python3 /path/to/skill-creator/scripts/quick_validate.py <output-skill-dir>
 ```

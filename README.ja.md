@@ -115,11 +115,13 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
-生成された maintainer skill を検証します。
+生成された maintainer skill を検証します。検証するのは rendered output directory であり、raw template である `assets/templates/project-skill` ではありません。
 
 ```bash
 node scripts/validate-project-skill.mjs ./my-project-maintainer
 ```
+
+Codex skill compatibility を確認したい場合は、rendered output に対して skill-creator の `quick_validate.py` も実行できます。この script は Python 環境の `PyYAML` に依存します。
 
 ## Current Focus
 

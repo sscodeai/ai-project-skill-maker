@@ -115,11 +115,13 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
-Validate a generated maintainer skill:
+Validate a generated maintainer skill. Validate the rendered output directory, not the raw `assets/templates/project-skill` template:
 
 ```bash
 node scripts/validate-project-skill.mjs ./my-project-maintainer
 ```
+
+For Codex skill compatibility, you can also run the skill-creator `quick_validate.py` script on the rendered output. That script depends on `PyYAML` in the Python environment.
 
 ## Current Focus
 

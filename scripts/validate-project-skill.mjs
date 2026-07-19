@@ -33,6 +33,18 @@ function walk(path, out = []) {
 }
 
 const errors = [];
+const allFiles = walk(dir);
+const templateFiles = allFiles.filter((file) => /\{\{[a-zA-Z0-9_]+\}\}/.test(readFileSync(file, "utf8")));
+
+if (templateFiles.length) {
+  console.error("AI project skill validation failed:");
+  console.error("- This looks like an unrendered template directory. Render it first, then validate the rendered output.");
+  for (const file of templateFiles.slice(0, 8)) {
+    console.error(`- Template placeholder found in: ${relative(dir, file)}`);
+  }
+  if (templateFiles.length > 8) console.error(`- ...and ${templateFiles.length - 8} more template files`);
+  process.exit(1);
+}
 
 for (const file of required) {
   if (!existsSync(join(dir, file))) errors.push(`Missing required file: ${file}`);
@@ -53,7 +65,7 @@ if (existsSync(skillPath)) {
   }
 }
 
-const markdownFiles = walk(dir).filter((f) => f.endsWith(".md"));
+const markdownFiles = allFiles.filter((f) => f.endsWith(".md"));
 for (const file of markdownFiles) {
   const text = readFileSync(file, "utf8");
   const rel = relative(dir, file);
