@@ -8,6 +8,16 @@ AI Project Skill Maker は meta-skill です。通常のプロジェクト文書
 
 特定のプラットフォームに固定しない設計です。標準テンプレートは AI project maintainer skill として使えます。また、reference adapters により、Codex skill、`AGENTS.md`、`CLAUDE.md`、Cursor rules、将来の assistant instruction file などの形式へ展開できるようにしています。
 
+## Source of Truth and Installation
+
+このリポジトリが `ai-project-skill-maker` skill の canonical source です。Codex personal skill としてローカルで使う場合は、リポジトリ内容を次の場所へ install または sync してください。
+
+```text
+~/.codex/skills/ai-project-skill-maker
+```
+
+古い `~/.codex/skills/project-skill-maker` を同時に有効な状態で残さないでください。両方が存在すると、Codex が古い skill 名を発見し、古い instructions を使う可能性があります。
+
 ## Modes
 
 ### Genesis Mode

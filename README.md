@@ -8,6 +8,16 @@ AI Project Skill Maker is a meta-skill: it helps create project-specific maintai
 
 It is designed to be platform-neutral. The default template can be used as an AI project maintainer skill, and the reference adapters describe how to emit formats such as Codex skills, `AGENTS.md`, `CLAUDE.md`, Cursor rules, and future assistant instruction files.
 
+## Source of Truth and Installation
+
+This repository is the canonical source for the `ai-project-skill-maker` skill. When using it as a local Codex personal skill, install or sync the repository contents to:
+
+```text
+~/.codex/skills/ai-project-skill-maker
+```
+
+Avoid keeping an older `~/.codex/skills/project-skill-maker` installation active at the same time. If both are present, Codex may discover the stale skill name and use older instructions.
+
 ## Modes
 
 ### Genesis Mode
