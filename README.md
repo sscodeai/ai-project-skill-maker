@@ -151,18 +151,23 @@ node scripts/self-check.mjs
 node scripts/self-check.mjs --check-installed
 ```
 
-## Current Focus
+## Current Capabilities
 
-The first version prioritizes:
+AI Project Skill Maker currently supports:
 
+- genesis mode for intent-first new projects
+- repo mode driven by observed repository signals
+- language and locale setup for author interviews and generated references
+- config schema, example configs, and `--init-config genesis|repo`
+- rendering and validating project maintainer skill folders
+- refresh workflows that preserve user-authored rule blocks
+- local Codex personal skill installation and installed-content self-checks
+- adapter guidance for Codex skills, `AGENTS.md`, `CLAUDE.md`, Cursor rules, and `.github/copilot-instructions.md`
 - Astro and documentation sites
 - TypeScript and Node OSS projects
 - documentation-heavy projects
-- reusable maintainer workflows for AI coding agents
 
-The design intentionally leaves room for more adapters, including `.github/copilot-instructions.md` and other platform-specific instruction formats.
-
-Current adapter references include Codex skills, `AGENTS.md`, `CLAUDE.md`, Cursor rules, and `.github/copilot-instructions.md`. See `references/adapters/output-contract.md` for shared adapter expectations.
+See `references/adapters/output-contract.md` for shared adapter expectations.
 
 ## License
 

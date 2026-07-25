@@ -151,18 +151,23 @@ node scripts/self-check.mjs
 node scripts/self-check.mjs --check-installed
 ```
 
-## Current Focus
+## Current Capabilities
 
-最初のバージョンでは、次の領域を優先しています。
+AI Project Skill Maker は現在、次の機能に対応しています。
 
+- intent-first な新規プロジェクト向けの genesis mode
+- 観測された repository signals に基づく repo mode
+- 作者インタビューと生成 references のための language / locale setup
+- config schema、example configs、`--init-config genesis|repo`
+- project maintainer skill folder の render と validate
+- user-authored rule blocks を保持する refresh workflows
+- ローカル Codex personal skill の installation と installed-content self-check
+- Codex skills、`AGENTS.md`、`CLAUDE.md`、Cursor rules、`.github/copilot-instructions.md` 向けの adapter guidance
 - Astro と documentation sites
 - TypeScript と Node OSS projects
 - documentation-heavy projects
-- AI coding agents 向けの再利用可能な maintainer workflows
 
-設計上、`.github/copilot-instructions.md` やその他のプラットフォーム固有 instruction format など、今後の adapters 追加も想定しています。
-
-現在の adapter references は、Codex skills、`AGENTS.md`、`CLAUDE.md`、Cursor rules、`.github/copilot-instructions.md` に対応しています。共通の adapter expectations は `references/adapters/output-contract.md` を参照してください。
+共通の adapter expectations は `references/adapters/output-contract.md` を参照してください。
 
 ## License
 
