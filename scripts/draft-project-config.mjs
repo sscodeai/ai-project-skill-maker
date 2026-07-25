@@ -91,10 +91,15 @@ const primaryReadme = readmes.find((file) => /^readme\.md$/i.test(file)) || read
 const docs = signals.files?.docs || [];
 const ci = signals.files?.ci || [];
 const configs = signals.files?.configs || [];
+const testFiles = signals.files?.testFiles || [];
+const agentInstructionFiles = signals.files?.agentInstructionFiles || [];
 const sourceRoots = signals.files?.sourceRoots || [];
 const lockfiles = signals.files?.lockfiles || [];
 const generatedHints = signals.files?.generatedHints || [];
-const pm = packageManager(signals);
+const pm = signals.tooling?.packageManager || packageManager(signals);
+const scriptsByCategory = signals.tooling?.scriptsByCategory || {};
+const frameworkVersions = signals.tooling?.frameworkVersions || {};
+const docsLanguageHints = signals.tooling?.docsLanguageHints || {};
 const frameworkHints = signals.frameworkHints || {};
 const standards = [
   frameworkHints.astro || frameworkHints.docsHeavy ? "web docs" : null,
@@ -150,8 +155,10 @@ const config = {
     [
       ...readmes.map((f) => observed(f, "is a README or overview file.")),
       ...sourceRoots.map((f) => observed(f, "is a top-level source/content/public root.")),
+      ...testFiles.slice(0, 12).map((f) => observed(f, "is a detected test file.")),
       ...docs.slice(0, 12).map((f) => observed(f, "is a documentation or content path.")),
       ...ci.map((f) => observed(f, "is a CI workflow or pipeline file.")),
+      ...agentInstructionFiles.map((f) => observed(f, "is an existing AI assistant instruction file.")),
     ],
     bullet("inferred_assumption", "Important paths should be filled from direct repo inspection.")
   ),
@@ -177,6 +184,7 @@ const config = {
       frameworkHints.typescript ? observed("tsconfig.json", "or TypeScript files indicate a TypeScript project.") : null,
       frameworkHints.node ? observed("package.json", "indicates a Node/package-managed project.") : null,
       frameworkHints.docsHeavy ? bullet("observed_fact", "README/docs/content signals indicate a documentation-heavy project.") : null,
+      Object.keys(frameworkVersions).length ? bullet("observed_fact", `Detected framework/tool versions: ${Object.entries(frameworkVersions).map(([name, version]) => `\`${name}@${version}\``).join(", ")}.`) : null,
     ],
     bullet("inferred_assumption", "System shape needs direct architecture inspection.")
   ),
@@ -214,6 +222,7 @@ const config = {
   languagePolicy: lines(
     [
       primaryReadme ? observed(primaryReadme, "provides language and terminology signals.") : null,
+      Object.values(docsLanguageHints).some(Boolean) ? bullet("observed_fact", `Documentation language hints: ${Object.entries(docsLanguageHints).filter(([, value]) => value).map(([name]) => name).join(", ")}.`) : null,
       bullet("declared_intent", "Confirm author comfort language, country/region context, and target audience locale."),
     ],
     bullet("declared_intent", "Confirm language and locale profile with the maintainer.")
@@ -238,6 +247,10 @@ const config = {
   verificationCommands: lines(
     [
       ...scriptBullets(scripts),
+      scriptsByCategory.test?.length ? bullet("observed_fact", `Test scripts detected: ${scriptsByCategory.test.map((name) => `\`${name}\``).join(", ")}.`) : null,
+      scriptsByCategory.build?.length ? bullet("observed_fact", `Build scripts detected: ${scriptsByCategory.build.map((name) => `\`${name}\``).join(", ")}.`) : null,
+      scriptsByCategory.lint?.length ? bullet("observed_fact", `Lint scripts detected: ${scriptsByCategory.lint.map((name) => `\`${name}\``).join(", ")}.`) : null,
+      scriptsByCategory.typecheck?.length ? bullet("observed_fact", `Typecheck scripts detected: ${scriptsByCategory.typecheck.map((name) => `\`${name}\``).join(", ")}.`) : null,
       Object.keys(scripts).length ? bullet("recommended_standard", "Use exact package scripts as the source of truth for available checks.") : null,
     ],
     bullet("inferred_assumption", "Verification commands need maintainer confirmation because no package scripts were detected.")
@@ -278,6 +291,7 @@ const config = {
       primaryReadme ? observed(primaryReadme, "was detected as a README source.") : null,
       signals.package ? observed("package.json", "was detected as package metadata.") : null,
       ci.length ? bullet("observed_fact", `CI files detected: ${ci.map((f) => `\`${f}\``).join(", ")}.`) : null,
+      agentInstructionFiles.length ? bullet("observed_fact", `Existing assistant instruction files detected: ${agentInstructionFiles.map((f) => `\`${f}\``).join(", ")}.`) : null,
       standards.length ? bullet("recommended_standard", `${standards.join(", ")} standards appear applicable from repo signals.`) : null,
       bullet("declared_intent", "Maintainer goals, constraints, and public voice still need interview confirmation."),
       bullet("inferred_assumption", "This config is a draft from repo signals and should be refined by direct file inspection."),

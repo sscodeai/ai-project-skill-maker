@@ -71,6 +71,14 @@ const temp = mkdtempSync(join(tmpdir(), "ai-project-skill-maker-self-check-"));
 
 try {
   assertOk("collect repo signals", run(["scripts/collect-repo-signals.mjs", "."]));
+  const signals = run(["scripts/collect-repo-signals.mjs", "."]);
+  assertOk("collect enriched repo signals", signals);
+  const parsedSignals = JSON.parse(signals.stdout);
+  if (!parsedSignals.tooling?.scriptsByCategory || !parsedSignals.files?.agentInstructionFiles || !parsedSignals.files?.testFiles) {
+    console.error("FAIL enriched repo signals shape");
+    process.exit(1);
+  }
+  console.log("OK enriched repo signals shape");
   assertOk("print schema", run(["scripts/render-project-skill.mjs", "--print-schema"]));
   const draftedConfig = run(["scripts/draft-project-config.mjs", "--repo", "."]);
   assertOk("draft repo config", draftedConfig);

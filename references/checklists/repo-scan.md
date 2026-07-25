@@ -15,8 +15,11 @@ Use this checklist after running `scripts/collect-repo-signals.mjs`.
 ## Signals to Extract
 
 - Package manager and Node/runtime version signals.
-- Framework and deployment platform.
+- Framework, framework versions, and deployment platform.
 - Build, lint, typecheck, test, docs, preview, and release scripts.
+- Test files and test runner signals.
+- Existing assistant instruction files such as `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/**`, and `.github/copilot-instructions.md`.
+- Documentation language and locale hints.
 - Documentation structure and public voice.
 - Naming conventions and file organization.
 - Existing quality gaps or missing checks.
