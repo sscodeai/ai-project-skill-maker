@@ -138,6 +138,19 @@ node scripts/validate-project-skill.mjs ./my-project-maintainer
 
 Codex skill compatibility を確認したい場合は、rendered output に対して skill-creator の `quick_validate.py` も実行できます。この script は Python 環境の `PyYAML` に依存します。
 
+ローカルの Codex personal skill を install または sync します。
+
+```bash
+node scripts/install-local-skill.mjs
+```
+
+リポジトリの self-check を実行します。
+
+```bash
+node scripts/self-check.mjs
+node scripts/self-check.mjs --check-installed
+```
+
 ## Current Focus
 
 最初のバージョンでは、次の領域を優先しています。

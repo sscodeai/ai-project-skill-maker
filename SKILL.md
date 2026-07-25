@@ -71,6 +71,8 @@ Future adapters may emit `.github/copilot-instructions.md` using the same eviden
 - `scripts/collect-repo-signals.mjs <repo>`: collect package, docs, CI, test, script, lockfile, style, and commit signals as JSON.
 - `scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>]`: render or refresh a maintainer skill while preserving manual blocks.
 - `scripts/validate-project-skill.mjs <skill-dir>`: verify required files, metadata, evidence labels, and manual preservation markers.
+- `scripts/self-check.mjs [--check-installed]`: run repository health checks for render, validation, template failure behavior, and optional installed skill sync.
+- `scripts/install-local-skill.mjs [--skills-dir <dir>]`: sync this repository to the local Codex personal skills directory.
 
 Read scripts only when debugging or changing behavior; they are designed to run directly.
 

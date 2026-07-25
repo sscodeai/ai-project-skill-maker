@@ -138,6 +138,19 @@ node scripts/validate-project-skill.mjs ./my-project-maintainer
 
 For Codex skill compatibility, you can also run the skill-creator `quick_validate.py` script on the rendered output. That script depends on `PyYAML` in the Python environment.
 
+Install or sync the local Codex personal skill:
+
+```bash
+node scripts/install-local-skill.mjs
+```
+
+Run the repository self-check:
+
+```bash
+node scripts/self-check.mjs
+node scripts/self-check.mjs --check-installed
+```
+
 ## Current Focus
 
 The first version prioritizes:
