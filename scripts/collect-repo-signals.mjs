@@ -4,6 +4,8 @@ import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const repo = process.argv[2] || process.cwd();
+const skippedDirNames = new Set([".git", "node_modules", "dist", "build", ".astro", ".next", "coverage"]);
+const generatedDirNames = new Set(["dist", "build", ".astro", ".next", "coverage"]);
 
 function rel(path) {
   return relative(repo, path) || ".";
@@ -21,14 +23,17 @@ function exists(path) {
   return existsSync(join(repo, path));
 }
 
-function walk(dir, maxDepth = 4, depth = 0, out = []) {
+function walk(dir, maxDepth = 4, depth = 0, out = { files: [], skippedDirs: [] }) {
   if (depth > maxDepth || !existsSync(dir)) return out;
   for (const name of readdirSync(dir)) {
-    if ([".git", "node_modules", "dist", "build", ".astro", ".next", "coverage"].includes(name)) continue;
     const full = join(dir, name);
     const s = statSync(full);
+    if (s.isDirectory() && skippedDirNames.has(name)) {
+      out.skippedDirs.push(`${rel(full)}/`);
+      continue;
+    }
     if (s.isDirectory()) walk(full, maxDepth, depth + 1, out);
-    else out.push(rel(full));
+    else out.files.push(rel(full));
   }
   return out;
 }
@@ -90,7 +95,9 @@ function docsLanguageHints(files) {
   };
 }
 
-const files = walk(repo, 5).sort();
+const walked = walk(repo, 5);
+const files = walked.files.sort();
+const skippedDirs = walked.skippedDirs.sort();
 const pkg = exists("package.json") ? safeJson(join(repo, "package.json")) : null;
 const lockfiles = ["package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "bun.lockb", "bun.lock"].filter(exists);
 const readmes = files.filter((f) => /^readme(\.|$)/i.test(f));
@@ -113,7 +120,21 @@ const sourceRoots = ["src", "app", "packages", "lib", "bin", "cli", "content", "
 const generatedHints = files.filter((f) =>
   /(^|\/)(dist|build|coverage|generated|__snapshots__|snapshots|schema|schemas|vendor|vendored)\//i.test(f) ||
   /\.(snap|lock|generated\.[cm]?[jt]s|d\.ts)$/.test(f)
-).slice(0, 120);
+);
+const skippedGeneratedDirs = skippedDirs.filter((f) => {
+  const name = f.replace(/\/$/, "").split("/").pop();
+  return generatedDirNames.has(name);
+});
+const generatedAndSkippedHints = [...new Set([...generatedHints, ...skippedGeneratedDirs])].slice(0, 120);
+const hasDocsRoot = docs.some((f) => /^(docs|documentation)\//i.test(f) || /^src\/content\//i.test(f));
+const hasDocsFramework = Boolean(
+  exists("astro.config.mjs") ||
+    exists("astro.config.ts") ||
+    exists("docusaurus.config.js") ||
+    exists("docusaurus.config.ts") ||
+    dependencyVersion(pkg, "@astrojs/starlight") ||
+    dependencyVersion(pkg, "@docusaurus/core")
+);
 
 const recentCommits = git(["log", "--oneline", "-n", "12"]).split("\n").filter(Boolean);
 const scripts = pkg?.scripts || {};
@@ -138,7 +159,8 @@ const signals = {
     agentInstructionFiles,
     sourceRoots,
     lockfiles,
-    generatedHints,
+    skippedDirs,
+    generatedHints: generatedAndSkippedHints,
   },
   tooling: {
     packageManager: packageManager(pkg, lockfiles),
@@ -164,7 +186,8 @@ const signals = {
     astro: exists("astro.config.mjs") || exists("astro.config.ts") || Boolean(pkg?.dependencies?.astro || pkg?.devDependencies?.astro),
     typescript: files.some((f) => f.endsWith(".ts") || f.endsWith(".tsx")) || exists("tsconfig.json"),
     node: Boolean(pkg),
-    docsHeavy: docs.length >= 8 || readmes.length > 0,
+    hasReadme: readmes.length > 0,
+    docsHeavy: docs.length >= 3 || hasDocsRoot || hasDocsFramework,
   },
   recentCommits,
 };

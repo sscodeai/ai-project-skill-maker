@@ -74,7 +74,14 @@ try {
   const signals = run(["scripts/collect-repo-signals.mjs", "."]);
   assertOk("collect enriched repo signals", signals);
   const parsedSignals = JSON.parse(signals.stdout);
-  if (!parsedSignals.tooling?.scriptsByCategory || !parsedSignals.files?.agentInstructionFiles || !parsedSignals.files?.testFiles) {
+  if (
+    !parsedSignals.tooling?.scriptsByCategory ||
+    !parsedSignals.files?.agentInstructionFiles ||
+    !parsedSignals.files?.testFiles ||
+    !parsedSignals.files?.skippedDirs ||
+    typeof parsedSignals.frameworkHints?.hasReadme !== "boolean" ||
+    typeof parsedSignals.frameworkHints?.docsHeavy !== "boolean"
+  ) {
     console.error("FAIL enriched repo signals shape");
     process.exit(1);
   }

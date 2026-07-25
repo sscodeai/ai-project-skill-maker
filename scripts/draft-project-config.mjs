@@ -183,7 +183,8 @@ const config = {
       frameworkHints.astro ? observed("astro.config.*", "or dependencies indicate an Astro project.") : null,
       frameworkHints.typescript ? observed("tsconfig.json", "or TypeScript files indicate a TypeScript project.") : null,
       frameworkHints.node ? observed("package.json", "indicates a Node/package-managed project.") : null,
-      frameworkHints.docsHeavy ? bullet("observed_fact", "README/docs/content signals indicate a documentation-heavy project.") : null,
+      frameworkHints.docsHeavy ? bullet("observed_fact", "Docs root, content, or docs framework signals indicate a documentation-heavy project.") : null,
+      frameworkHints.hasReadme && !frameworkHints.docsHeavy ? bullet("observed_fact", "README signals exist, but docs-heavy project structure was not detected.") : null,
       Object.keys(frameworkVersions).length ? bullet("observed_fact", `Detected framework/tool versions: ${Object.entries(frameworkVersions).map(([name, version]) => `\`${name}@${version}\``).join(", ")}.`) : null,
     ],
     bullet("inferred_assumption", "System shape needs direct architecture inspection.")
