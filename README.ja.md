@@ -107,6 +107,13 @@ refresh workflow では、この marker の中身を保持します。
 node scripts/collect-repo-signals.mjs /path/to/repo > repo-signals.json
 ```
 
+repository または signals file から repo-mode render config の初稿を生成します。
+
+```bash
+node scripts/draft-project-config.mjs --repo /path/to/repo > config.json
+node scripts/draft-project-config.mjs --signals repo-signals.json > config.json
+```
+
 JSON config から project maintainer skill を生成します。
 
 ```bash

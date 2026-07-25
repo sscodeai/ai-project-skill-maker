@@ -71,6 +71,7 @@ Use the shared output contract before emitting adapter-specific files.
 ## Scripts
 
 - `scripts/collect-repo-signals.mjs <repo>`: collect package, docs, CI, test, script, lockfile, style, and commit signals as JSON.
+- `scripts/draft-project-config.mjs --repo <repo>`: draft a repo-mode render config from collected repository signals.
 - `scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>]`: render or refresh a maintainer skill while preserving manual blocks.
 - `scripts/validate-project-skill.mjs <skill-dir>`: verify required files, metadata, evidence labels, and manual preservation markers.
 - `scripts/self-check.mjs [--check-installed]`: run repository health checks for render, validation, template failure behavior, and optional installed skill sync.

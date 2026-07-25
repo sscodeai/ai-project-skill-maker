@@ -107,6 +107,13 @@ Collect repository signals:
 node scripts/collect-repo-signals.mjs /path/to/repo > repo-signals.json
 ```
 
+Draft a repo-mode render config from a repository or signals file:
+
+```bash
+node scripts/draft-project-config.mjs --repo /path/to/repo > config.json
+node scripts/draft-project-config.mjs --signals repo-signals.json > config.json
+```
+
 Render a project maintainer skill from a JSON config:
 
 ```bash

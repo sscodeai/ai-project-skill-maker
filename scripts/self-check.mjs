@@ -72,6 +72,9 @@ const temp = mkdtempSync(join(tmpdir(), "ai-project-skill-maker-self-check-"));
 try {
   assertOk("collect repo signals", run(["scripts/collect-repo-signals.mjs", "."]));
   assertOk("print schema", run(["scripts/render-project-skill.mjs", "--print-schema"]));
+  const draftedConfig = run(["scripts/draft-project-config.mjs", "--repo", "."]);
+  assertOk("draft repo config", draftedConfig);
+  JSON.parse(draftedConfig.stdout);
 
   const rawTemplate = run(["scripts/validate-project-skill.mjs", "assets/templates/project-skill"]);
   assertFailIncludes("raw template validation fails clearly", rawTemplate, "Render it first");
