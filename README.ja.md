@@ -115,6 +115,13 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+利用できる fields は `references/config-schema.md` にまとまっています。starter config は次の場所にあります。
+
+```text
+assets/examples/genesis-config.json
+assets/examples/repo-config.json
+```
+
 生成された maintainer skill を検証します。検証するのは rendered output directory であり、raw template である `assets/templates/project-skill` ではありません。
 
 ```bash

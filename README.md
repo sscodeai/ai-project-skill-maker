@@ -115,6 +115,13 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+See `references/config-schema.md` for supported fields. Starter configs are available at:
+
+```text
+assets/examples/genesis-config.json
+assets/examples/repo-config.json
+```
+
 Validate a generated maintainer skill. Validate the rendered output directory, not the raw `assets/templates/project-skill` template:
 
 ```bash

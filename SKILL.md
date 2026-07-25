@@ -51,6 +51,10 @@ Read `references/output-schema.md` before rendering. A project maintainer skill 
 
 Do not stuff detailed maintenance rules into the generated `SKILL.md`; put durable details in `references/`.
 
+## Config Inputs
+
+Read `references/config-schema.md` before writing or editing a render config. Use `assets/examples/genesis-config.json` for intent-first projects and `assets/examples/repo-config.json` for existing repositories.
+
 ## Adapters
 
 Default output is platform-neutral project maintainer guidance. When the user requests a specific assistant artifact, read the matching adapter:
