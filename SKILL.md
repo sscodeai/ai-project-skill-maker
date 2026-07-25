@@ -53,7 +53,7 @@ Do not stuff detailed maintenance rules into the generated `SKILL.md`; put durab
 
 ## Config Inputs
 
-Read `references/config-schema.md` before writing or editing a render config. Use `assets/examples/genesis-config.json` for intent-first projects and `assets/examples/repo-config.json` for existing repositories.
+Read `references/config-schema.md` before writing or editing a render config. Use `assets/examples/genesis-config.json` for intent-first projects and `assets/examples/repo-config.json` for existing repositories. You can also run `scripts/render-project-skill.mjs --init-config genesis|repo` or `scripts/render-project-skill.mjs --print-schema`.
 
 ## Adapters
 

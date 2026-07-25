@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const skillRoot = dirname(here);
 const defaultTemplate = join(skillRoot, "assets", "templates", "project-skill");
+const examplesDir = join(skillRoot, "assets", "examples");
+const configSchemaPath = join(skillRoot, "references", "config-schema.md");
 
 function parseArgs(argv) {
   const args = {};
@@ -14,6 +16,8 @@ function parseArgs(argv) {
     if (arg === "--input") args.input = argv[++i];
     else if (arg === "--output") args.output = argv[++i];
     else if (arg === "--template") args.template = argv[++i];
+    else if (arg === "--init-config") args.initConfig = argv[++i];
+    else if (arg === "--print-schema") args.printSchema = true;
     else if (arg === "--help") args.help = true;
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -21,7 +25,10 @@ function parseArgs(argv) {
 }
 
 function usage() {
-  console.log("Usage: node scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>]");
+  console.log(`Usage:
+  node scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>]
+  node scripts/render-project-skill.mjs --init-config genesis|repo
+  node scripts/render-project-skill.mjs --print-schema`);
 }
 
 function slugify(value) {
@@ -101,6 +108,21 @@ function preserveManualBlock(next, previous) {
 }
 
 const args = parseArgs(process.argv);
+if (args.printSchema) {
+  console.log(readFileSync(configSchemaPath, "utf8"));
+  process.exit(0);
+}
+
+if (args.initConfig) {
+  const mode = String(args.initConfig).toLowerCase();
+  if (!["genesis", "repo"].includes(mode)) {
+    console.error("--init-config must be one of: genesis, repo");
+    process.exit(1);
+  }
+  console.log(readFileSync(join(examplesDir, `${mode}-config.json`), "utf8"));
+  process.exit(0);
+}
+
 if (args.help || !args.input || !args.output) {
   usage();
   process.exit(args.help ? 0 : 1);

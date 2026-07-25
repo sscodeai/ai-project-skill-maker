@@ -122,6 +122,14 @@ assets/examples/genesis-config.json
 assets/examples/repo-config.json
 ```
 
+renderer から starter config や schema を出力することもできます。
+
+```bash
+node scripts/render-project-skill.mjs --init-config genesis > config.json
+node scripts/render-project-skill.mjs --init-config repo > config.json
+node scripts/render-project-skill.mjs --print-schema
+```
+
 生成された maintainer skill を検証します。検証するのは rendered output directory であり、raw template である `assets/templates/project-skill` ではありません。
 
 ```bash

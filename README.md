@@ -122,6 +122,14 @@ assets/examples/genesis-config.json
 assets/examples/repo-config.json
 ```
 
+You can also print starters or the schema from the renderer:
+
+```bash
+node scripts/render-project-skill.mjs --init-config genesis > config.json
+node scripts/render-project-skill.mjs --init-config repo > config.json
+node scripts/render-project-skill.mjs --print-schema
+```
+
 Validate a generated maintainer skill. Validate the rendered output directory, not the raw `assets/templates/project-skill` template:
 
 ```bash
