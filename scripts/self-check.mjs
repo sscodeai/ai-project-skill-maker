@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = dirname(here);
 const checkInstalled = process.argv.includes("--check-installed");
+const skillPayload = ["SKILL.md", "agents", "references", "assets", "scripts"];
 
 function run(args, options = {}) {
   const result = spawnSync(process.execPath, args, {
@@ -59,12 +60,23 @@ function listFiles(dir, root = dir, out = []) {
   return out;
 }
 
+function listPayloadFiles(root) {
+  const files = [];
+  for (const name of skillPayload) {
+    const full = join(root, name);
+    if (!existsSync(full)) continue;
+    if (statSync(full).isDirectory()) listFiles(full, root, files);
+    else files.push(name);
+  }
+  return files.sort();
+}
+
 function hashFile(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
 
 function fileHashMap(root) {
-  return new Map(listFiles(root).sort().map((file) => [file, hashFile(join(root, file))]));
+  return new Map(listPayloadFiles(root).map((file) => [file, hashFile(join(root, file))]));
 }
 
 const temp = mkdtempSync(join(tmpdir(), "ai-project-skill-maker-self-check-"));
@@ -136,18 +148,20 @@ try {
   if (checkInstalled && installed && existsSync(installed)) {
     const repoFiles = fileHashMap(repoRoot);
     const installedFiles = fileHashMap(installed);
+    const forbidden = ["README.md", "README.ja.md", "LICENSE"].filter((file) => existsSync(join(installed, file)));
     const missing = [...repoFiles.keys()].filter((file) => !installedFiles.has(file));
     const extra = [...installedFiles.keys()].filter((file) => !repoFiles.has(file));
     const changed = [...repoFiles.keys()].filter((file) => installedFiles.has(file) && installedFiles.get(file) !== repoFiles.get(file));
-    if (missing.length || extra.length || changed.length) {
+    if (missing.length || extra.length || changed.length || forbidden.length) {
       console.error("FAIL installed skill differs from repo");
       for (const [label, files] of [["missing", missing], ["extra", extra], ["changed", changed]]) {
         for (const file of files.slice(0, 8)) console.error(`- ${label}: ${file}`);
         if (files.length > 8) console.error(`- ${label}: ...and ${files.length - 8} more`);
       }
+      for (const file of forbidden) console.error(`- forbidden repo doc in installed skill: ${file}`);
       process.exit(1);
     }
-    console.log("OK installed skill content matches repo");
+    console.log("OK installed skill payload matches repo");
   } else if (checkInstalled) {
     console.log("SKIP installed skill check");
   }

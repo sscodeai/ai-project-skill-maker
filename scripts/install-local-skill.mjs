@@ -8,6 +8,7 @@ const repoRoot = dirname(here);
 const home = process.env.HOME;
 const defaultSkillsDir = process.env.CODEX_HOME ? join(process.env.CODEX_HOME, "skills") : join(home, ".codex", "skills");
 const defaultBackupDir = process.env.CODEX_HOME ? join(process.env.CODEX_HOME, "skills-backup") : join(home, ".codex", "skills-backup");
+const skillPayload = ["SKILL.md", "agents", "references", "assets", "scripts"];
 
 function parseArgs(argv) {
   const args = { skillsDir: defaultSkillsDir, backupOld: true };
@@ -59,8 +60,16 @@ if (args.help) {
 
 const installDir = join(args.skillsDir, "ai-project-skill-maker");
 mkdirSync(args.skillsDir, { recursive: true });
-removeExtra(repoRoot, installDir);
-copyDir(repoRoot, installDir);
+rmSync(installDir, { recursive: true, force: true });
+mkdirSync(installDir, { recursive: true });
+for (const name of skillPayload) {
+  const sourcePath = join(repoRoot, name);
+  if (!existsSync(sourcePath)) continue;
+  const destPath = join(installDir, name);
+  const stats = statSync(sourcePath);
+  if (stats.isDirectory()) copyDir(sourcePath, destPath);
+  else copyFileSync(sourcePath, destPath);
+}
 
 const oldDir = join(args.skillsDir, "project-skill-maker");
 if (args.backupOld && existsSync(oldDir)) {
@@ -72,3 +81,4 @@ if (args.backupOld && existsSync(oldDir)) {
 }
 
 console.log(`Installed ${relative(process.cwd(), installDir) || installDir}`);
+console.log(`Payload: ${skillPayload.join(", ")}`);

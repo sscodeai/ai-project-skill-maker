@@ -18,6 +18,8 @@ This repository is the canonical source for the `ai-project-skill-maker` skill. 
 
 Avoid keeping an older `~/.codex/skills/project-skill-maker` installation active at the same time. If both are present, Codex may discover the stale skill name and use older instructions.
 
+The local skill install contains only the runtime payload: `SKILL.md`, `agents/`, `references/`, `assets/`, and `scripts/`. Repository documents such as `README.md`, `README.ja.md`, and `LICENSE` remain in the repository.
+
 ## Modes
 
 ### Genesis Mode

@@ -18,6 +18,8 @@ AI Project Skill Maker は meta-skill です。通常のプロジェクト文書
 
 古い `~/.codex/skills/project-skill-maker` を同時に有効な状態で残さないでください。両方が存在すると、Codex が古い skill 名を発見し、古い instructions を使う可能性があります。
 
+ローカルの skill install に含めるのは runtime payload のみです。対象は `SKILL.md`、`agents/`、`references/`、`assets/`、`scripts/` です。`README.md`、`README.ja.md`、`LICENSE` などの repository documents はリポジトリ側に残します。
+
 ## Modes
 
 ### Genesis Mode
