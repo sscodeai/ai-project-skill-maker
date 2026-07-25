@@ -162,6 +162,8 @@ The first version prioritizes:
 
 The design intentionally leaves room for more adapters, including `.github/copilot-instructions.md` and other platform-specific instruction formats.
 
+Current adapter references include Codex skills, `AGENTS.md`, `CLAUDE.md`, Cursor rules, and `.github/copilot-instructions.md`. See `references/adapters/output-contract.md` for shared adapter expectations.
+
 ## License
 
 Apache-2.0

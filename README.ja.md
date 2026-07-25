@@ -162,6 +162,8 @@ node scripts/self-check.mjs --check-installed
 
 設計上、`.github/copilot-instructions.md` やその他のプラットフォーム固有 instruction format など、今後の adapters 追加も想定しています。
 
+現在の adapter references は、Codex skills、`AGENTS.md`、`CLAUDE.md`、Cursor rules、`.github/copilot-instructions.md` に対応しています。共通の adapter expectations は `references/adapters/output-contract.md` を参照してください。
+
 ## License
 
 Apache-2.0

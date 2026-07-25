@@ -15,7 +15,7 @@ Keep this `SKILL.md` small. Load only the references needed for the requested mo
 
 - Use **genesis mode** when the project does not exist yet or has too little repository evidence. Read `references/modes/genesis.md`, `references/checklists/genesis-intake.md`, and `references/rules/language-policy.md`.
 - Use **repo mode** when a repository already exists. Run `scripts/collect-repo-signals.mjs`, then read `references/modes/repo.md` and `references/checklists/repo-scan.md`.
-- Use **refresh workflow** when updating an existing project maintainer skill or instruction bundle. Preserve user-authored rules and read `references/output-schema.md`, `references/rules/evidence-vs-recommendation.md`, and the relevant mode file.
+- Use **refresh workflow** when updating an existing project maintainer skill or instruction bundle. Preserve user-authored rules and read `references/workflows/refresh.md`, `references/output-schema.md`, `references/rules/evidence-vs-recommendation.md`, and the relevant mode file.
 
 If the mode is ambiguous, infer it from available artifacts. Ask only when the choice affects output structure or user intent.
 
@@ -59,12 +59,14 @@ Read `references/config-schema.md` before writing or editing a render config. Us
 
 Default output is platform-neutral project maintainer guidance. When the user requests a specific assistant artifact, read the matching adapter:
 
+- `references/adapters/output-contract.md`
 - `references/adapters/codex-skill.md`
 - `references/adapters/agents-md.md`
 - `references/adapters/claude-md.md`
 - `references/adapters/cursor-rules.md`
+- `references/adapters/copilot-instructions.md`
 
-Future adapters may emit `.github/copilot-instructions.md` using the same evidence model.
+Use the shared output contract before emitting adapter-specific files.
 
 ## Scripts
 
