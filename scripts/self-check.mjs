@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = dirname(here);
@@ -48,6 +49,14 @@ function listFiles(dir, root = dir, out = []) {
   return out;
 }
 
+function hashFile(path) {
+  return createHash("sha256").update(readFileSync(path)).digest("hex");
+}
+
+function fileHashMap(root) {
+  return new Map(listFiles(root).sort().map((file) => [file, hashFile(join(root, file))]));
+}
+
 const temp = mkdtempSync(join(tmpdir(), "ai-project-skill-maker-self-check-"));
 
 try {
@@ -77,14 +86,20 @@ try {
 
   const installed = process.env.HOME ? join(process.env.HOME, ".codex", "skills", "ai-project-skill-maker") : null;
   if (checkInstalled && installed && existsSync(installed)) {
-    const repoFiles = listFiles(repoRoot).sort();
-    const installedFiles = listFiles(installed).sort();
-    const same = JSON.stringify(repoFiles) === JSON.stringify(installedFiles);
-    if (!same) {
-      console.error("FAIL installed skill file list differs from repo");
+    const repoFiles = fileHashMap(repoRoot);
+    const installedFiles = fileHashMap(installed);
+    const missing = [...repoFiles.keys()].filter((file) => !installedFiles.has(file));
+    const extra = [...installedFiles.keys()].filter((file) => !repoFiles.has(file));
+    const changed = [...repoFiles.keys()].filter((file) => installedFiles.has(file) && installedFiles.get(file) !== repoFiles.get(file));
+    if (missing.length || extra.length || changed.length) {
+      console.error("FAIL installed skill differs from repo");
+      for (const [label, files] of [["missing", missing], ["extra", extra], ["changed", changed]]) {
+        for (const file of files.slice(0, 8)) console.error(`- ${label}: ${file}`);
+        if (files.length > 8) console.error(`- ${label}: ...and ${files.length - 8} more`);
+      }
       process.exit(1);
     }
-    console.log("OK installed skill file list matches repo");
+    console.log("OK installed skill content matches repo");
   } else if (checkInstalled) {
     console.log("SKIP installed skill check");
   }
