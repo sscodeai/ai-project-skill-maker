@@ -39,6 +39,16 @@ function assertFailIncludes(label, result, text) {
   console.log(`OK ${label}`);
 }
 
+function assertFileIncludes(label, path, text) {
+  const content = readFileSync(path, "utf8");
+  if (!content.includes(text)) {
+    console.error(`FAIL ${label}`);
+    console.error(`${path} does not include expected text`);
+    process.exit(1);
+  }
+  console.log(`OK ${label}`);
+}
+
 function listFiles(dir, root = dir, out = []) {
   for (const name of readdirSync(dir)) {
     if (name === ".git") continue;
@@ -76,6 +86,26 @@ try {
     assertOk(`render ${mode} output`, run(["scripts/render-project-skill.mjs", "--input", configPath, "--output", outDir]));
     assertOk(`validate ${mode} output`, run(["scripts/validate-project-skill.mjs", outDir]));
   }
+
+  const refreshConfigPath = join(temp, "refresh.json");
+  const refreshConfig = run(["scripts/render-project-skill.mjs", "--init-config", "genesis"]);
+  assertOk("init refresh config", refreshConfig);
+  writeFileSync(refreshConfigPath, refreshConfig.stdout);
+  const refreshOutDir = join(temp, "refresh-maintainer");
+  const preservedRule = "- declared_intent: Preserve this self-check user rule.";
+  const intentPath = join(refreshOutDir, "references", "project-intent.md");
+  assertOk("render refresh output first pass", run(["scripts/render-project-skill.mjs", "--input", refreshConfigPath, "--output", refreshOutDir]));
+  const intent = readFileSync(intentPath, "utf8");
+  writeFileSync(
+    intentPath,
+    intent.replace(
+      "<!-- BEGIN USER RULES -->\n<!-- Add durable project-specific rules here. This block is preserved on refresh. -->\n<!-- END USER RULES -->",
+      `<!-- BEGIN USER RULES -->\n${preservedRule}\n<!-- END USER RULES -->`
+    )
+  );
+  assertOk("render refresh output second pass", run(["scripts/render-project-skill.mjs", "--input", refreshConfigPath, "--output", refreshOutDir]));
+  assertFileIncludes("refresh preserves user rules", intentPath, preservedRule);
+  assertOk("validate refresh output", run(["scripts/validate-project-skill.mjs", refreshOutDir]));
 
   const skill = readFileSync(join(repoRoot, "SKILL.md"), "utf8");
   if (!skill.includes("## Mode Selection") || !skill.includes("## Core Workflow")) {
