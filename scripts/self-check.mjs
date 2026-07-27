@@ -102,6 +102,11 @@ try {
   const draftedConfig = run(["scripts/draft-project-config.mjs", "--repo", "."]);
   assertOk("draft repo config", draftedConfig);
   JSON.parse(draftedConfig.stdout);
+  const adapterConfigPath = join(temp, "adapter-config.json");
+  writeFileSync(adapterConfigPath, draftedConfig.stdout);
+  for (const adapter of ["agents", "claude", "cursor", "copilot"]) {
+    assertOk(`render ${adapter} adapter`, run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", adapter, "--output", join(temp, "adapters")]));
+  }
 
   const rawTemplate = run(["scripts/validate-project-skill.mjs", "assets/templates/project-skill"]);
   assertFailIncludes("raw template validation fails clearly", rawTemplate, "Render it first");

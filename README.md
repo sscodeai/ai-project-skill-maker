@@ -124,6 +124,15 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+Render platform-specific instruction files:
+
+```bash
+node scripts/render-adapter.mjs --input config.json --adapter agents --output .
+node scripts/render-adapter.mjs --input config.json --adapter claude --output .
+node scripts/render-adapter.mjs --input config.json --adapter cursor --output .
+node scripts/render-adapter.mjs --input config.json --adapter copilot --output .
+```
+
 See `references/config-schema.md` for supported fields. Starter configs are available at:
 
 ```text

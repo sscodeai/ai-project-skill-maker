@@ -124,6 +124,15 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+platform-specific instruction files を生成します。
+
+```bash
+node scripts/render-adapter.mjs --input config.json --adapter agents --output .
+node scripts/render-adapter.mjs --input config.json --adapter claude --output .
+node scripts/render-adapter.mjs --input config.json --adapter cursor --output .
+node scripts/render-adapter.mjs --input config.json --adapter copilot --output .
+```
+
 利用できる fields は `references/config-schema.md` にまとまっています。starter config は次の場所にあります。
 
 ```text
