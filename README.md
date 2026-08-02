@@ -124,6 +124,16 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+For durable output, validate the config first or render in strict mode:
+
+```bash
+node scripts/validate-config.mjs --input config.json --mode repo --strict
+node scripts/render-project-skill.mjs \
+  --input config.json \
+  --output ./my-project-maintainer \
+  --strict
+```
+
 Render platform-specific instruction files:
 
 ```bash
@@ -177,6 +187,7 @@ AI Project Skill Maker currently supports:
 - repo mode driven by observed repository signals
 - language and locale setup for author interviews and generated references
 - config schema, example configs, and `--init-config genesis|repo`
+- config validation with strict checks for evidence labels and repo fact citations
 - rendering and validating project maintainer skill folders
 - refresh workflows that preserve user-authored rule blocks
 - local Codex personal skill installation and installed-content self-checks

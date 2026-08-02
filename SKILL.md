@@ -28,9 +28,10 @@ If the mode is ambiguous, infer it from available artifacts. Ask only when the c
 3. Separate every claim into one of: observed facts, declared user intent, recommended standards, inferred assumptions. Read `references/rules/evidence-vs-recommendation.md`.
 4. Choose applicable standards. First release supports Astro/docs sites, TypeScript/Node OSS, and documentation-heavy projects. Load only relevant files under `references/standards/`.
 5. Choose output adapters. Default to a project maintainer skill folder; read adapter references only when requested.
-6. Render the project maintainer skill from `assets/templates/project-skill/` with `scripts/render-project-skill.mjs`.
-7. Validate the rendered output with `scripts/validate-project-skill.mjs`. Run platform-specific compatibility checks when relevant.
-8. Report the final path, generated files, preserved user areas, validation result, and suggested invocation prompt.
+6. Validate finished configs with `scripts/validate-config.mjs --strict` when the output is meant to be durable rather than a rough draft.
+7. Render the project maintainer skill from `assets/templates/project-skill/` with `scripts/render-project-skill.mjs`.
+8. Validate the rendered output with `scripts/validate-project-skill.mjs`. Run platform-specific compatibility checks when relevant.
+9. Report the final path, generated files, preserved user areas, validation result, and suggested invocation prompt.
 
 ## Required Output Shape
 
@@ -73,7 +74,8 @@ Use the shared output contract before emitting adapter-specific files.
 - `scripts/collect-repo-signals.mjs <repo>`: collect package, docs, CI, test, script, lockfile, style, and commit signals as JSON.
 - `scripts/draft-project-config.mjs --repo <repo>`: draft a repo-mode render config from collected repository signals.
 - `scripts/render-adapter.mjs --input config.json --adapter agents|claude|cursor|copilot --output <path-or-dir>`: render platform-specific instruction files.
-- `scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>]`: render or refresh a maintainer skill while preserving manual blocks.
+- `scripts/validate-config.mjs --input config.json [--mode genesis|repo] [--strict]`: check config shape, evidence labels, strict-mode coverage, and repo-mode observed fact citations.
+- `scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>] [--strict]`: render or refresh a maintainer skill while preserving manual blocks.
 - `scripts/validate-project-skill.mjs <skill-dir>`: verify required files, metadata, evidence labels, and manual preservation markers.
 - `scripts/self-check.mjs [--check-installed]`: run repository health checks for render, validation, template failure behavior, and optional installed skill sync.
 - `scripts/install-local-skill.mjs [--skills-dir <dir>]`: sync this repository to the local Codex personal skills directory.

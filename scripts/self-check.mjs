@@ -99,6 +99,11 @@ try {
   }
   console.log("OK enriched repo signals shape");
   assertOk("print schema", run(["scripts/render-project-skill.mjs", "--print-schema"]));
+  assertOk("validate genesis config strict", run(["scripts/validate-config.mjs", "--input", "assets/examples/genesis-config.json", "--mode", "genesis", "--strict"]));
+  assertOk("validate repo config strict", run(["scripts/validate-config.mjs", "--input", "assets/examples/repo-config.json", "--mode", "repo", "--strict"]));
+  const invalidConfigPath = join(temp, "invalid-config.json");
+  writeFileSync(invalidConfigPath, "{}");
+  assertFailIncludes("invalid config fails clearly", run(["scripts/validate-config.mjs", "--input", invalidConfigPath, "--strict"]), "projectName is required");
   const draftedConfig = run(["scripts/draft-project-config.mjs", "--repo", "."]);
   assertOk("draft repo config", draftedConfig);
   JSON.parse(draftedConfig.stdout);
@@ -118,7 +123,7 @@ try {
     JSON.parse(config.stdout);
     writeFileSync(configPath, config.stdout);
     const outDir = join(temp, `${mode}-maintainer`);
-    assertOk(`render ${mode} output`, run(["scripts/render-project-skill.mjs", "--input", configPath, "--output", outDir]));
+    assertOk(`render ${mode} output`, run(["scripts/render-project-skill.mjs", "--input", configPath, "--output", outDir, "--strict"]));
     assertOk(`validate ${mode} output`, run(["scripts/validate-project-skill.mjs", outDir]));
   }
 

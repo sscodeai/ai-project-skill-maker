@@ -124,6 +124,16 @@ node scripts/render-project-skill.mjs \
   --output ./my-project-maintainer
 ```
 
+長期利用する出力では、先に config を検証するか strict mode で render します。
+
+```bash
+node scripts/validate-config.mjs --input config.json --mode repo --strict
+node scripts/render-project-skill.mjs \
+  --input config.json \
+  --output ./my-project-maintainer \
+  --strict
+```
+
 platform-specific instruction files を生成します。
 
 ```bash
@@ -177,6 +187,7 @@ AI Project Skill Maker は現在、次の機能に対応しています。
 - 観測された repository signals に基づく repo mode
 - 作者インタビューと生成 references のための language / locale setup
 - config schema、example configs、`--init-config genesis|repo`
+- evidence labels と repo fact citations を確認する strict config validation
 - project maintainer skill folder の render と validate
 - user-authored rule blocks を保持する refresh workflows
 - ローカル Codex personal skill の installation と installed-content self-check

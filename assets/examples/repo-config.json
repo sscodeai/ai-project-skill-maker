@@ -19,7 +19,7 @@
   "dependencyPolicy": "- observed_fact: `package.json` records runtime and development dependencies.\n- recommended_standard: Add dependencies only when they remove real complexity and fit the package policy.",
   "patternsToAvoid": "- recommended_standard: Avoid unrelated refactors, public API churn, and broad dependency changes during focused fixes.",
   "languagePolicy": "- declared_intent: Core maintainer instructions stay in English.\n- inferred_assumption: Public docs should follow the existing README language unless the maintainer says otherwise.",
-  "toneAndNaming": "- observed_fact: README and source names provide terminology signals.\n- recommended_standard: Reuse existing names for public concepts.",
+  "toneAndNaming": "- observed_fact: `README.md` and files under `src/` provide terminology signals.\n- recommended_standard: Reuse existing names for public concepts.",
   "documentationConventions": "- recommended_standard: Update README, API docs, or examples when public behavior changes.\n- recommended_standard: Keep code examples runnable or clearly illustrative.",
   "commonChangeFlow": "- recommended_standard: Inspect relevant source and tests, make a focused change, run targeted checks, then run broader checks when risk warrants.",
   "firstRepositoryTasks": "- inferred_assumption: Not applicable for an already existing repo; replace with current maintenance backlog after maintainer interview.",
