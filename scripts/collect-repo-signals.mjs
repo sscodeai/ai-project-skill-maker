@@ -108,6 +108,7 @@ const testFiles = files.filter((f) =>
   /\.(test|spec|e2e)\.[cm]?[jt]sx?$/.test(f) ||
   /\.(test|spec)\.mjs$/.test(f)
 ).slice(0, 120);
+const typeScriptFiles = files.filter((f) => /\.[cm]?tsx?$/.test(f) && !/\.d\.ts$/.test(f)).slice(0, 120);
 const configs = files.filter((f) =>
   /(^|\/)(astro|vite|next|nuxt|tsconfig|eslint|prettier|biome|vitest|jest|playwright|rollup|tsup|unbuild|changeset|release-it|semantic-release|typedoc|docusaurus|starlight)/i.test(f)
 ).slice(0, 120);
@@ -156,6 +157,7 @@ const signals = {
     ci,
     configs,
     testFiles,
+    typeScriptFiles,
     agentInstructionFiles,
     sourceRoots,
     lockfiles,
@@ -184,7 +186,7 @@ const signals = {
     : null,
   frameworkHints: {
     astro: exists("astro.config.mjs") || exists("astro.config.ts") || Boolean(pkg?.dependencies?.astro || pkg?.devDependencies?.astro),
-    typescript: files.some((f) => f.endsWith(".ts") || f.endsWith(".tsx")) || exists("tsconfig.json"),
+    typescript: typeScriptFiles.length > 0 || exists("tsconfig.json"),
     node: Boolean(pkg),
     hasReadme: readmes.length > 0,
     docsHeavy: docs.length >= 3 || hasDocsRoot || hasDocsFramework,

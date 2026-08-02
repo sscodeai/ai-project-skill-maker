@@ -99,6 +99,7 @@ try {
     !parsedSignals.tooling?.scriptsByCategory ||
     !parsedSignals.files?.agentInstructionFiles ||
     !parsedSignals.files?.testFiles ||
+    !parsedSignals.files?.typeScriptFiles ||
     !parsedSignals.files?.skippedDirs ||
     typeof parsedSignals.frameworkHints?.hasReadme !== "boolean" ||
     typeof parsedSignals.frameworkHints?.docsHeavy !== "boolean"
@@ -175,6 +176,22 @@ try {
   assertOk("render copilot adapter to .github dir", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "copilot", "--output", githubDir]));
   assertFileIncludes("copilot adapter direct path exists", join(githubDir, "copilot-instructions.md"), "Copilot Instructions");
   assertFileNotExists("copilot adapter avoids nested .github dir", join(githubDir, ".github", "copilot-instructions.md"));
+
+  const tsOnlyRepo = join(temp, "ts-only-repo");
+  mkdirSync(join(tsOnlyRepo, "src"), { recursive: true });
+  writeFileSync(join(tsOnlyRepo, "src", "index.ts"), "export const value: number = 1;\n");
+  const tsOnlyConfig = run(["scripts/draft-project-config.mjs", "--repo", tsOnlyRepo]);
+  assertOk("draft ts-only repo config", tsOnlyConfig);
+  const tsOnlyConfigPath = join(temp, "ts-only-config.json");
+  writeFileSync(tsOnlyConfigPath, tsOnlyConfig.stdout);
+  assertFileIncludes("ts-only draft cites actual ts file", tsOnlyConfigPath, "`src/index.ts`");
+  const tsOnlyText = readFileSync(tsOnlyConfigPath, "utf8");
+  if (tsOnlyText.includes("`tsconfig.json`")) {
+    console.error("FAIL ts-only draft does not cite missing tsconfig");
+    process.exit(1);
+  }
+  console.log("OK ts-only draft does not cite missing tsconfig");
+  assertOk("ts-only draft validates strict", run(["scripts/validate-config.mjs", "--input", tsOnlyConfigPath, "--mode", "repo", "--strict"]));
 
   const rawTemplate = run(["scripts/validate-project-skill.mjs", "assets/templates/project-skill"]);
   assertFailIncludes("raw template validation fails clearly", rawTemplate, "Render it first");

@@ -103,6 +103,7 @@ const docs = signals.files?.docs || [];
 const ci = signals.files?.ci || [];
 const configs = signals.files?.configs || [];
 const testFiles = signals.files?.testFiles || [];
+const typeScriptFiles = signals.files?.typeScriptFiles || [];
 const agentInstructionFiles = signals.files?.agentInstructionFiles || [];
 const sourceRoots = signals.files?.sourceRoots || [];
 const lockfiles = signals.files?.lockfiles || [];
@@ -118,6 +119,13 @@ const standards = [
   frameworkHints.typescript || frameworkHints.node ? "TypeScript/Node" : null,
   signals.package?.license ? "OSS maintenance" : null,
 ].filter(Boolean);
+
+function typeScriptEvidence() {
+  if (!frameworkHints.typescript) return null;
+  if (configs.includes("tsconfig.json")) return observed("tsconfig.json", "indicates TypeScript is part of the project.");
+  if (typeScriptFiles.length) return observed(typeScriptFiles[0], "is a TypeScript source file.");
+  return bullet("inferred_assumption", "TypeScript is hinted by tooling, but the exact source file should be confirmed.");
+}
 
 const config = {
   skillName: `${slugify(projectName)}-maintainer`,
@@ -147,7 +155,7 @@ const config = {
   ),
   constraints: lines(
     [
-      frameworkHints.typescript ? observed("tsconfig.json", "or TypeScript source files indicate TypeScript is part of the project.") : null,
+      typeScriptEvidence(),
       signals.package?.engines ? observed("package.json", `declares engines ${JSON.stringify(signals.package.engines)}.`) : null,
       signals.package?.license ? observed("package.json", `declares license \`${signals.package.license}\`.`) : null,
       bullet("declared_intent", "Confirm hard technical, legal, hosting, privacy, or dependency constraints."),
@@ -193,7 +201,7 @@ const config = {
   systemShape: lines(
     [
       frameworkHints.astro ? observed("astro.config.*", "or dependencies indicate an Astro project.") : null,
-      frameworkHints.typescript ? observed("tsconfig.json", "or TypeScript files indicate a TypeScript project.") : null,
+      typeScriptEvidence(),
       frameworkHints.node ? observed("package.json", "indicates a Node/package-managed project.") : null,
       frameworkHints.docsHeavy ? bullet("inferred_assumption", "Docs root, content, or docs framework signals indicate a documentation-heavy project.") : null,
       frameworkHints.hasReadme && !frameworkHints.docsHeavy ? bullet("inferred_assumption", "README signals exist, but docs-heavy project structure was not detected.") : null,
