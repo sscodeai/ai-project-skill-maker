@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const adapters = new Set(["agents", "claude", "cursor", "copilot"]);
@@ -11,6 +11,7 @@ function parseArgs(argv) {
     if (arg === "--input") args.input = argv[++i];
     else if (arg === "--adapter") args.adapter = argv[++i];
     else if (arg === "--output") args.output = argv[++i];
+    else if (arg === "--force") args.force = true;
     else if (arg === "--help") args.help = true;
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -19,7 +20,7 @@ function parseArgs(argv) {
 
 function usage() {
   console.log(`Usage:
-  node scripts/render-adapter.mjs --input config.json --adapter agents|claude|cursor|copilot --output <path-or-dir>`);
+  node scripts/render-adapter.mjs --input config.json --adapter agents|claude|cursor|copilot --output <path-or-dir> [--force]`);
 }
 
 function section(title, value) {
@@ -42,6 +43,10 @@ function header(name) {
 
 function footer() {
   return "<!-- END AI-PROJECT-SKILL-MAKER -->\n";
+}
+
+function generatedBlockPattern() {
+  return /<!-- BEGIN AI-PROJECT-SKILL-MAKER -->[\s\S]*?<!-- END AI-PROJECT-SKILL-MAKER -->\n?/;
 }
 
 function common(config, target) {
@@ -87,6 +92,16 @@ function outputPath(adapter, output) {
   throw new Error(`Unsupported adapter: ${adapter}`);
 }
 
+function mergeWithExisting(target, rendered, force) {
+  if (!existsSync(target)) return rendered;
+  const existing = readFileSync(target, "utf8");
+  if (!existing.trim()) return rendered;
+  const marker = generatedBlockPattern();
+  if (marker.test(existing)) return existing.replace(marker, rendered);
+  if (force) return rendered;
+  throw new Error(`Refusing to overwrite non-empty adapter file without AI-PROJECT-SKILL-MAKER markers: ${target}. Re-run with --force to replace it.`);
+}
+
 const args = parseArgs(process.argv);
 if (args.help || !args.input || !args.adapter || !args.output) {
   usage();
@@ -107,5 +122,12 @@ const rendered =
   renderCursor(config);
 const target = outputPath(adapter, args.output);
 mkdirSync(dirname(target), { recursive: true });
-writeFileSync(target, rendered);
+let output;
+try {
+  output = mergeWithExisting(target, rendered, args.force);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
+writeFileSync(target, output);
 console.log(`Rendered ${adapter} adapter to ${target}`);

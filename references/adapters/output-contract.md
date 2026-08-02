@@ -29,4 +29,5 @@ When refreshing adapter outputs:
 
 - Preserve user-authored sections if markers exist.
 - Prefer regenerating clearly machine-owned sections.
+- Refuse to overwrite non-empty adapter files that do not contain maker markers unless the user explicitly chooses a force replace operation.
 - Report any adapter output that could not be refreshed safely.

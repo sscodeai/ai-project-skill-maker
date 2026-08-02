@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdtempSync, rmSync, readFileSync, existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, readFileSync, existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -113,6 +113,17 @@ try {
   for (const adapter of ["agents", "claude", "cursor", "copilot"]) {
     assertOk(`render ${adapter} adapter`, run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", adapter, "--output", join(temp, "adapters")]));
   }
+  const agentsPath = join(temp, "adapters", "AGENTS.md");
+  const existingAgents = readFileSync(agentsPath, "utf8");
+  const keepText = "USER KEEP: adapter refresh should preserve this section.";
+  writeFileSync(agentsPath, `${existingAgents}\n${keepText}\n`);
+  assertOk("refresh agents adapter preserves user text", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "agents", "--output", join(temp, "adapters")]));
+  assertFileIncludes("agents adapter kept user text", agentsPath, keepText);
+  const unsafeAdapterPath = join(temp, "unsafe", "AGENTS.md");
+  mkdirSync(dirname(unsafeAdapterPath), { recursive: true });
+  writeFileSync(unsafeAdapterPath, "Existing human instructions without maker markers.\n");
+  assertFailIncludes("adapter refuses unsafe overwrite", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "agents", "--output", join(temp, "unsafe")]), "--force");
+  assertOk("adapter force overwrite", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "agents", "--output", join(temp, "unsafe"), "--force"]));
 
   const rawTemplate = run(["scripts/validate-project-skill.mjs", "assets/templates/project-skill"]);
   assertFailIncludes("raw template validation fails clearly", rawTemplate, "Render it first");
