@@ -109,6 +109,7 @@ try {
   JSON.parse(draftedConfig.stdout);
   const adapterConfigPath = join(temp, "adapter-config.json");
   writeFileSync(adapterConfigPath, draftedConfig.stdout);
+  assertOk("draft repo config validates strict", run(["scripts/validate-config.mjs", "--input", adapterConfigPath, "--mode", "repo", "--strict"]));
   for (const adapter of ["agents", "claude", "cursor", "copilot"]) {
     assertOk(`render ${adapter} adapter`, run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", adapter, "--output", join(temp, "adapters")]));
   }

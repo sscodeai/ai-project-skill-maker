@@ -76,6 +76,17 @@ function packageManager(signals) {
   return null;
 }
 
+function packageManagerSource(signals) {
+  if (signals.package?.packageManager) return "package.json";
+  const locks = signals.files?.lockfiles || [];
+  if (locks.includes("pnpm-lock.yaml")) return "pnpm-lock.yaml";
+  if (locks.includes("yarn.lock")) return "yarn.lock";
+  if (locks.some((f) => f.startsWith("bun."))) return locks.find((f) => f.startsWith("bun."));
+  if (locks.includes("package-lock.json")) return "package-lock.json";
+  if (locks.includes("npm-shrinkwrap.json")) return "npm-shrinkwrap.json";
+  return null;
+}
+
 const args = parseArgs(process.argv);
 if (args.help || (!args.repo && !args.signals)) {
   usage();
@@ -97,6 +108,7 @@ const sourceRoots = signals.files?.sourceRoots || [];
 const lockfiles = signals.files?.lockfiles || [];
 const generatedHints = signals.files?.generatedHints || [];
 const pm = signals.tooling?.packageManager || packageManager(signals);
+const pmSource = packageManagerSource(signals);
 const scriptsByCategory = signals.tooling?.scriptsByCategory || {};
 const frameworkVersions = signals.tooling?.frameworkVersions || {};
 const docsLanguageHints = signals.tooling?.docsLanguageHints || {};
@@ -183,8 +195,8 @@ const config = {
       frameworkHints.astro ? observed("astro.config.*", "or dependencies indicate an Astro project.") : null,
       frameworkHints.typescript ? observed("tsconfig.json", "or TypeScript files indicate a TypeScript project.") : null,
       frameworkHints.node ? observed("package.json", "indicates a Node/package-managed project.") : null,
-      frameworkHints.docsHeavy ? bullet("observed_fact", "Docs root, content, or docs framework signals indicate a documentation-heavy project.") : null,
-      frameworkHints.hasReadme && !frameworkHints.docsHeavy ? bullet("observed_fact", "README signals exist, but docs-heavy project structure was not detected.") : null,
+      frameworkHints.docsHeavy ? bullet("inferred_assumption", "Docs root, content, or docs framework signals indicate a documentation-heavy project.") : null,
+      frameworkHints.hasReadme && !frameworkHints.docsHeavy ? bullet("inferred_assumption", "README signals exist, but docs-heavy project structure was not detected.") : null,
       Object.keys(frameworkVersions).length ? bullet("observed_fact", `Detected framework/tool versions: ${Object.entries(frameworkVersions).map(([name, version]) => `\`${name}@${version}\``).join(", ")}.`) : null,
     ],
     bullet("inferred_assumption", "System shape needs direct architecture inspection.")
@@ -214,7 +226,8 @@ const config = {
   dependencyPolicy: lines(
     [
       signals.package ? observed("package.json", "records dependencies and devDependencies.") : null,
-      pm ? bullet("observed_fact", `Package manager appears to be \`${pm}\`.`) : null,
+      pm && pmSource ? observed(pmSource, `indicates the package manager appears to be \`${pm}\`.`) : null,
+      pm && !pmSource ? bullet("inferred_assumption", `Package manager appears to be \`${pm}\`.`) : null,
       bullet("recommended_standard", "Add dependencies only when they remove real complexity and fit project policy."),
     ],
     bullet("recommended_standard", "Confirm dependency policy with the maintainer.")
@@ -223,7 +236,7 @@ const config = {
   languagePolicy: lines(
     [
       primaryReadme ? observed(primaryReadme, "provides language and terminology signals.") : null,
-      Object.values(docsLanguageHints).some(Boolean) ? bullet("observed_fact", `Documentation language hints: ${Object.entries(docsLanguageHints).filter(([, value]) => value).map(([name]) => name).join(", ")}.`) : null,
+      Object.values(docsLanguageHints).some(Boolean) ? bullet("inferred_assumption", `Documentation language hints from scanned docs: ${Object.entries(docsLanguageHints).filter(([, value]) => value).map(([name]) => name).join(", ")}.`) : null,
       bullet("declared_intent", "Confirm author comfort language, country/region context, and target audience locale."),
     ],
     bullet("declared_intent", "Confirm language and locale profile with the maintainer.")
