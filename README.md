@@ -179,6 +179,12 @@ node scripts/self-check.mjs
 node scripts/self-check.mjs --check-installed
 ```
 
+Forward-test prompts for fresh-session evaluation live in:
+
+```text
+references/evals/forward-tests.md
+```
+
 ## Current Capabilities
 
 AI Project Skill Maker currently supports:
@@ -192,6 +198,7 @@ AI Project Skill Maker currently supports:
 - refresh workflows that preserve user-authored rule blocks
 - local Codex personal skill installation and installed-content self-checks
 - adapter guidance for Codex skills, `AGENTS.md`, `CLAUDE.md`, Cursor rules, and `.github/copilot-instructions.md`
+- forward-test prompts for genesis, repo, refresh, and adapter workflows
 - Astro and documentation sites
 - TypeScript and Node OSS projects
 - documentation-heavy projects

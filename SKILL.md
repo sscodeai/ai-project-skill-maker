@@ -33,6 +33,8 @@ If the mode is ambiguous, infer it from available artifacts. Ask only when the c
 8. Validate the rendered output with `scripts/validate-project-skill.mjs`. Run platform-specific compatibility checks when relevant.
 9. Report the final path, generated files, preserved user areas, validation result, and suggested invocation prompt.
 
+For forward-testing this maker itself in a fresh session, read `references/evals/forward-tests.md`.
+
 ## Required Output Shape
 
 Read `references/output-schema.md` before rendering. A project maintainer skill must include at least:
@@ -66,6 +68,7 @@ Default output is platform-neutral project maintainer guidance. When the user re
 - `references/adapters/claude-md.md`
 - `references/adapters/cursor-rules.md`
 - `references/adapters/copilot-instructions.md`
+- `references/evals/forward-tests.md`
 
 Use the shared output contract before emitting adapter-specific files.
 

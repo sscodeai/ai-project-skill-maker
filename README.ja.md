@@ -179,6 +179,12 @@ node scripts/self-check.mjs
 node scripts/self-check.mjs --check-installed
 ```
 
+fresh session で評価するための forward-test prompts は次にあります。
+
+```text
+references/evals/forward-tests.md
+```
+
 ## Current Capabilities
 
 AI Project Skill Maker は現在、次の機能に対応しています。
@@ -192,6 +198,7 @@ AI Project Skill Maker は現在、次の機能に対応しています。
 - user-authored rule blocks を保持する refresh workflows
 - ローカル Codex personal skill の installation と installed-content self-check
 - Codex skills、`AGENTS.md`、`CLAUDE.md`、Cursor rules、`.github/copilot-instructions.md` 向けの adapter guidance
+- genesis、repo、refresh、adapter workflow 向けの forward-test prompts
 - Astro と documentation sites
 - TypeScript と Node OSS projects
 - documentation-heavy projects

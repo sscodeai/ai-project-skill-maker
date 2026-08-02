@@ -13,6 +13,7 @@ Before delivering a generated project maintainer skill:
 - Verification commands are concrete or clearly marked as recommendations/assumptions.
 - Generated files and edit restrictions are documented.
 - Refresh did not remove content inside `BEGIN USER RULES` blocks.
+- For maker changes, run at least one forward-test prompt from `references/evals/forward-tests.md` when the change affects mode selection, interviews, rendering, refresh, validation, or adapters.
 
 Run:
 

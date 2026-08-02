@@ -153,6 +153,10 @@ try {
     process.exit(1);
   }
   console.log("OK SKILL.md workflow sections");
+  assertFileIncludes("SKILL.md links forward tests", join(repoRoot, "SKILL.md"), "references/evals/forward-tests.md");
+  assertFileIncludes("forward tests include genesis prompt", join(repoRoot, "references", "evals", "forward-tests.md"), "## Genesis Mode Prompt");
+  assertFileIncludes("forward tests include repo prompt", join(repoRoot, "references", "evals", "forward-tests.md"), "## Repo Mode Prompt");
+  assertFileIncludes("forward tests include refresh prompt", join(repoRoot, "references", "evals", "forward-tests.md"), "## Refresh Workflow Prompt");
 
   const installed = process.env.HOME ? join(process.env.HOME, ".codex", "skills", "ai-project-skill-maker") : null;
   if (checkInstalled && installed && existsSync(installed)) {
