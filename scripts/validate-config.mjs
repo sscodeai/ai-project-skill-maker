@@ -4,6 +4,29 @@ import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const evidenceLabels = ["observed_fact", "declared_intent", "recommended_standard", "inferred_assumption"];
+const repoRootNames = new Set([
+  "src",
+  "lib",
+  "app",
+  "pages",
+  "components",
+  "content",
+  "docs",
+  "test",
+  "tests",
+  "public",
+  "assets",
+  "build",
+  "coverage",
+  "dist",
+  "scripts",
+  "references",
+  "agents",
+  "vendor",
+  "__snapshots__",
+  ".github",
+  ".cursor",
+]);
 
 const knownFields = new Set([
   "skillName",
@@ -110,7 +133,16 @@ function observedFactLines(config) {
 
 function hasPathCitation(line) {
   const codeSpans = [...line.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
-  return codeSpans.some((value) => /(^|\/|\.)[\w@.-]+(\/|\.|\*|\w$)/.test(value));
+  return codeSpans.some(looksLikeRepoPath);
+}
+
+function looksLikeRepoPath(value) {
+  const text = String(value || "").trim().replace(/\/$/, "");
+  if (!text || /\s/.test(text)) return false;
+  if (text.includes("/") || text.includes("*")) return true;
+  if (repoRootNames.has(text)) return true;
+  if (/^\.[\w.-]+$/.test(text)) return true;
+  return /^[\w@.-]+\.[A-Za-z0-9*]+$/.test(text);
 }
 
 function inferMode(config, explicitMode) {
@@ -124,11 +156,12 @@ function inferMode(config, explicitMode) {
 export function validateConfig(config, options = {}) {
   const errors = [];
   const warnings = [];
-  const mode = inferMode(config, options.mode);
 
   if (!config || typeof config !== "object" || Array.isArray(config)) {
     return { ok: false, errors: ["Config must be a JSON object."], warnings, mode: null, counts: {} };
   }
+
+  const mode = inferMode(config, options.mode);
 
   if (!isNonEmptyString(config.projectName)) {
     errors.push("projectName is required and must be a non-empty string.");

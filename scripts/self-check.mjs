@@ -113,6 +113,27 @@ try {
   const invalidConfigPath = join(temp, "invalid-config.json");
   writeFileSync(invalidConfigPath, "{}");
   assertFailIncludes("invalid config fails clearly", run(["scripts/validate-config.mjs", "--input", invalidConfigPath, "--strict"]), "projectName is required");
+  const nullConfigPath = join(temp, "null-config.json");
+  writeFileSync(nullConfigPath, "null");
+  assertFailIncludes("null config fails clearly", run(["scripts/validate-config.mjs", "--input", nullConfigPath, "--strict"]), "Config must be a JSON object");
+  const weakCitationConfigPath = join(temp, "weak-citation-config.json");
+  const weakCitationConfig = {
+    projectName: "Weak Citation",
+    projectPurpose: "- observed_fact: `notapath` claims a fact.",
+    audience: "- declared_intent: Confirm audience.",
+    constraints: "- declared_intent: Confirm constraints.",
+    maintenanceGoals: "- declared_intent: Confirm maintenance goals.",
+    importantPaths: "- observed_fact: `README.md` is a source file.",
+    entryPoints: "- observed_fact: `package.json` is a source file.",
+    systemShape: "- observed_fact: `src/` is a source root.",
+    stylePatterns: "- recommended_standard: Follow existing style.",
+    verificationCommands: "- recommended_standard: Run available checks.",
+    generatedOutput: "- recommended_standard: Avoid generated output.",
+    editRestrictions: "- recommended_standard: Confirm before generated-file edits.",
+    evidenceLedger: "- observed_fact: `notapath` is not a valid path citation.\n- declared_intent: Confirm maintainer intent.",
+  };
+  writeFileSync(weakCitationConfigPath, JSON.stringify(weakCitationConfig, null, 2));
+  assertFailIncludes("weak observed citation fails clearly", run(["scripts/validate-config.mjs", "--input", weakCitationConfigPath, "--mode", "repo", "--strict"]), "should cite a source path");
   const draftedConfig = run(["scripts/draft-project-config.mjs", "--repo", "."]);
   assertOk("draft repo config", draftedConfig);
   JSON.parse(draftedConfig.stdout);

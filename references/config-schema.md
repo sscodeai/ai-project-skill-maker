@@ -78,7 +78,7 @@ The config is intentionally plain JSON so AI agents and humans can edit it witho
 
 Use these labels in field values:
 
-- `observed_fact`: cite repo paths when available.
+- `observed_fact`: cite repo paths when available. In strict mode, citations inside backticks must look like source paths, file names with extensions, globs, hidden repo directories, or known repo roots such as `src`, `docs`, and `tests`.
 - `declared_intent`: cite the maker interview or maintainer statement.
 - `recommended_standard`: cite the selected standard or explain the fit.
 - `inferred_assumption`: keep narrow and easy to revise.
