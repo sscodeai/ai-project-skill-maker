@@ -50,6 +50,15 @@ function assertFileIncludes(label, path, text) {
   console.log(`OK ${label}`);
 }
 
+function assertFileNotExists(label, path) {
+  if (existsSync(path)) {
+    console.error(`FAIL ${label}`);
+    console.error(`${path} should not exist`);
+    process.exit(1);
+  }
+  console.log(`OK ${label}`);
+}
+
 function listFiles(dir, root = dir, out = []) {
   for (const name of readdirSync(dir)) {
     if (name === ".git") continue;
@@ -124,6 +133,27 @@ try {
   writeFileSync(unsafeAdapterPath, "Existing human instructions without maker markers.\n");
   assertFailIncludes("adapter refuses unsafe overwrite", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "agents", "--output", join(temp, "unsafe")]), "--force");
   assertOk("adapter force overwrite", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "agents", "--output", join(temp, "unsafe"), "--force"]));
+  const cursorRulesDir = join(temp, "cursor-direct", ".cursor", "rules");
+  assertOk("render cursor adapter to rules dir", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "cursor", "--output", cursorRulesDir]));
+  assertFileIncludes("cursor adapter direct path exists", join(cursorRulesDir, "project.mdc"), "alwaysApply: true");
+  assertFileNotExists("cursor adapter avoids nested rules dir", join(cursorRulesDir, ".cursor", "rules", "project.mdc"));
+  const cursorPath = join(temp, "adapters", ".cursor", "rules", "project.mdc");
+  const cursorFirst = readFileSync(cursorPath, "utf8");
+  writeFileSync(cursorPath, `${cursorFirst}\n${keepText}\n`);
+  assertOk("refresh cursor adapter preserves user text", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "cursor", "--output", join(temp, "adapters")]));
+  const cursorSecond = readFileSync(cursorPath, "utf8");
+  const cursorFrontmatterCount = (cursorSecond.match(/^---$/gm) || []).length;
+  if (cursorFrontmatterCount !== 2) {
+    console.error("FAIL cursor adapter refresh does not duplicate frontmatter");
+    console.error(`Expected 2 frontmatter delimiters, got ${cursorFrontmatterCount}`);
+    process.exit(1);
+  }
+  console.log("OK cursor adapter refresh does not duplicate frontmatter");
+  assertFileIncludes("cursor adapter kept user text", cursorPath, keepText);
+  const githubDir = join(temp, "github-direct", ".github");
+  assertOk("render copilot adapter to .github dir", run(["scripts/render-adapter.mjs", "--input", adapterConfigPath, "--adapter", "copilot", "--output", githubDir]));
+  assertFileIncludes("copilot adapter direct path exists", join(githubDir, "copilot-instructions.md"), "Copilot Instructions");
+  assertFileNotExists("copilot adapter avoids nested .github dir", join(githubDir, ".github", "copilot-instructions.md"));
 
   const rawTemplate = run(["scripts/validate-project-skill.mjs", "assets/templates/project-skill"]);
   assertFailIncludes("raw template validation fails clearly", rawTemplate, "Render it first");

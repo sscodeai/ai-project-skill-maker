@@ -76,7 +76,7 @@ Use the shared output contract before emitting adapter-specific files.
 
 - `scripts/collect-repo-signals.mjs <repo>`: collect package, docs, CI, test, script, lockfile, style, and commit signals as JSON.
 - `scripts/draft-project-config.mjs --repo <repo>`: draft a repo-mode render config from collected repository signals.
-- `scripts/render-adapter.mjs --input config.json --adapter agents|claude|cursor|copilot --output <path-or-dir>`: render platform-specific instruction files.
+- `scripts/render-adapter.mjs --input config.json --adapter agents|claude|cursor|copilot --output <repo-root-or-file> [--force]`: render platform-specific instruction files while preserving marked generated blocks.
 - `scripts/validate-config.mjs --input config.json [--mode genesis|repo] [--strict]`: check config shape, evidence labels, strict-mode coverage, and repo-mode observed fact citations.
 - `scripts/render-project-skill.mjs --input config.json --output <skill-dir> [--template <dir>] [--strict]`: render or refresh a maintainer skill while preserving manual blocks.
 - `scripts/validate-project-skill.mjs <skill-dir>`: verify required files, metadata, evidence labels, and manual preservation markers.

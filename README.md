@@ -143,6 +143,8 @@ node scripts/render-adapter.mjs --input config.json --adapter cursor --output .
 node scripts/render-adapter.mjs --input config.json --adapter copilot --output .
 ```
 
+`--output` may be a repository root or an explicit target file. For Copilot and Cursor, `.github` and `.cursor/rules` directories are also accepted directly.
+
 See `references/config-schema.md` for supported fields. Starter configs are available at:
 
 ```text

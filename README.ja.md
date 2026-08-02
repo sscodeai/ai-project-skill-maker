@@ -143,6 +143,8 @@ node scripts/render-adapter.mjs --input config.json --adapter cursor --output .
 node scripts/render-adapter.mjs --input config.json --adapter copilot --output .
 ```
 
+`--output` には repository root または明示的な target file を指定できます。Copilot と Cursor では、`.github` と `.cursor/rules` directories も直接指定できます。
+
 利用できる fields は `references/config-schema.md` にまとまっています。starter config は次の場所にあります。
 
 ```text

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, normalize } from "node:path";
 
 const adapters = new Set(["agents", "claude", "cursor", "copilot"]);
 
@@ -46,7 +46,7 @@ function footer() {
 }
 
 function generatedBlockPattern() {
-  return /<!-- BEGIN AI-PROJECT-SKILL-MAKER -->[\s\S]*?<!-- END AI-PROJECT-SKILL-MAKER -->\n?/;
+  return /(?:---\n[\s\S]*?\n---\n\n)?<!-- BEGIN AI-PROJECT-SKILL-MAKER -->[\s\S]*?<!-- END AI-PROJECT-SKILL-MAKER -->\n?/;
 }
 
 function common(config, target) {
@@ -87,13 +87,23 @@ ${common(config, "Cursor Rules")}`;
 function outputPath(adapter, output) {
   if (adapter === "agents") return output.endsWith(".md") ? output : join(output, "AGENTS.md");
   if (adapter === "claude") return output.endsWith(".md") ? output : join(output, "CLAUDE.md");
-  if (adapter === "copilot") return output.endsWith(".md") ? output : join(output, ".github", "copilot-instructions.md");
-  if (adapter === "cursor") return output.endsWith(".mdc") ? output : join(output, ".cursor", "rules", "project.mdc");
+  if (adapter === "copilot") {
+    if (output.endsWith(".md")) return output;
+    if (basename(normalize(output)) === ".github") return join(output, "copilot-instructions.md");
+    return join(output, ".github", "copilot-instructions.md");
+  }
+  if (adapter === "cursor") {
+    if (output.endsWith(".mdc")) return output;
+    const normalized = normalize(output);
+    if (basename(dirname(normalized)) === ".cursor" && basename(normalized) === "rules") return join(output, "project.mdc");
+    return join(output, ".cursor", "rules", "project.mdc");
+  }
   throw new Error(`Unsupported adapter: ${adapter}`);
 }
 
 function mergeWithExisting(target, rendered, force) {
   if (!existsSync(target)) return rendered;
+  if (statSync(target).isDirectory()) throw new Error(`Adapter output target is a directory, expected a file path: ${target}`);
   const existing = readFileSync(target, "utf8");
   if (!existing.trim()) return rendered;
   const marker = generatedBlockPattern();
