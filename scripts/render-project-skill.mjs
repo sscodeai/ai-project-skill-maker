@@ -54,7 +54,10 @@ function valueFor(config, key) {
   const defaults = {
     skillName: slugify(config.skillName || `${config.projectName || "project"}-maintainer`),
     projectName: config.projectName || "Project",
+    projectDisplayName: `${config.projectName || "Project"} Maintainer`,
+    projectSkillDescription: config.projectSkillDescription || `Maintain ${config.projectName || "this project"} as a project-specific AI maintainer skill. Use when an AI coding agent needs to understand this project's intent, architecture, coding standards, content style, workflows, generated files, verification commands, releases, or long-term maintenance conventions before making or reviewing changes.`,
     shortDescription: config.shortDescription || `Maintain ${config.projectName || "this project"}`,
+    defaultPrompt: `Use $${slugify(config.skillName || `${config.projectName || "project"}-maintainer`)} to make a well-verified change to this project.`,
     projectPurpose: "- inferred_assumption: Project purpose has not been fully declared yet.",
     audience: "- inferred_assumption: Audience has not been fully declared yet.",
     publicVoice: "- inferred_assumption: Public voice has not been fully declared yet.",
@@ -95,7 +98,13 @@ function valueFor(config, key) {
 }
 
 function render(text, config) {
-  return text.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (_, key) => valueFor(config, key));
+  return text
+    .replace(/\{\{yaml:([a-zA-Z0-9_]+)\}\}/g, (_, key) => yamlString(valueFor(config, key)))
+    .replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (_, key) => valueFor(config, key));
+}
+
+function yamlString(value) {
+  return JSON.stringify(String(value ?? ""));
 }
 
 function manualBlock(text) {
