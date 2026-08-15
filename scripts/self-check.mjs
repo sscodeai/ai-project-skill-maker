@@ -127,6 +127,12 @@ try {
   const nullConfigPath = join(temp, "null-config.json");
   writeFileSync(nullConfigPath, "null");
   assertFailIncludes("null config fails clearly", run(["scripts/validate-config.mjs", "--input", nullConfigPath, "--strict"]), "Config must be a JSON object");
+  const objectFieldConfigPath = join(temp, "object-field-config.json");
+  const objectFieldConfig = JSON.parse(readFileSync("assets/examples/repo-config.json", "utf8"));
+  objectFieldConfig.projectPurpose = { text: "- observed_fact: `README.md` should not render from an object." };
+  writeFileSync(objectFieldConfigPath, JSON.stringify(objectFieldConfig, null, 2));
+  assertFailIncludes("object config field fails strict", run(["scripts/validate-config.mjs", "--input", objectFieldConfigPath, "--mode", "repo", "--strict"]), "projectPurpose must be a string or an array of strings");
+  assertFailIncludes("render strict rejects object config field", run(["scripts/render-project-skill.mjs", "--input", objectFieldConfigPath, "--output", join(temp, "object-field"), "--strict"]), "projectPurpose must be a string or an array of strings");
   const weakCitationConfigPath = join(temp, "weak-citation-config.json");
   const weakCitationConfig = {
     mode: "repo",
