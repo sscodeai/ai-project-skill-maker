@@ -240,6 +240,9 @@ try {
   assertFileIncludes("yaml-safe project frontmatter quoted", join(yamlOutDir, "SKILL.md"), 'description: "Maintain Quoted: \\"Project\\"');
   assertFileIncludes("yaml-safe project metadata quoted", join(yamlOutDir, "agents", "openai.yaml"), 'short_description: "Maintain \\"quoted\\" project"');
   assertOk("validate yaml-safe project output", run(["scripts/validate-project-skill.mjs", yamlOutDir]));
+  mkdirSync(join(yamlOutDir, "assets"), { recursive: true });
+  writeFileSync(join(yamlOutDir, "assets", "sample-template.md"), "# {{title}}\n\nTemplate asset without maintainer evidence blocks.\n");
+  assertOk("validate project output with markdown asset template", run(["scripts/validate-project-skill.mjs", yamlOutDir]));
   writeFileSync(join(yamlOutDir, "agents", "openai.yaml"), 'interface:\n  display_name: "Quoted Project"\n  short_description: "Maintain "quoted" project"\n  default_prompt: "Use the project skill."\n');
   assertFailIncludes("broken project metadata YAML fails", run(["scripts/validate-project-skill.mjs", yamlOutDir]), "invalid quoted string");
 
