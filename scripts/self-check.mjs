@@ -288,6 +288,8 @@ try {
   mkdirSync(join(yamlOutDir, "assets"), { recursive: true });
   writeFileSync(join(yamlOutDir, "assets", "sample-template.md"), "# {{title}}\n\nTemplate asset without maintainer evidence blocks.\n");
   assertOk("validate project output with markdown asset template", run(["scripts/validate-project-skill.mjs", yamlOutDir]));
+  writeFileSync(join(yamlOutDir, "agents", "openai.yaml"), 'display_name: "Quoted Project"\nshort_description: "Maintain quoted project"\ndefault_prompt: "Use the project skill."\n');
+  assertFailIncludes("project metadata outside interface fails", run(["scripts/validate-project-skill.mjs", yamlOutDir]), "missing interface section");
   writeFileSync(join(yamlOutDir, "agents", "openai.yaml"), 'interface:\n  display_name: "Quoted Project"\n  short_description: "Maintain "quoted" project"\n  default_prompt: "Use the project skill."\n');
   assertFailIncludes("broken project metadata YAML fails", run(["scripts/validate-project-skill.mjs", yamlOutDir]), "invalid quoted string");
 
