@@ -290,7 +290,7 @@ try {
   assertOk("init refresh config", refreshConfig);
   writeFileSync(refreshConfigPath, refreshConfig.stdout);
   const refreshOutDir = join(temp, "refresh-maintainer");
-  const preservedRule = "- declared_intent: Preserve this self-check user rule.";
+  const preservedRule = "- declared_intent: Preserve this self-check user rule with $& and $$ literally.";
   const intentPath = join(refreshOutDir, "references", "project-intent.md");
   assertOk("render refresh output first pass", run(["scripts/render-project-skill.mjs", "--input", refreshConfigPath, "--output", refreshOutDir]));
   const intent = readFileSync(intentPath, "utf8");
@@ -298,7 +298,7 @@ try {
     intentPath,
     intent.replace(
       "<!-- BEGIN USER RULES -->\n<!-- Add durable project-specific rules here. This block is preserved on refresh. -->\n<!-- END USER RULES -->",
-      `<!-- BEGIN USER RULES -->\n${preservedRule}\n<!-- END USER RULES -->`
+      () => `<!-- BEGIN USER RULES -->\n${preservedRule}\n<!-- END USER RULES -->`
     )
   );
   assertOk("render refresh output second pass", run(["scripts/render-project-skill.mjs", "--input", refreshConfigPath, "--output", refreshOutDir]));
